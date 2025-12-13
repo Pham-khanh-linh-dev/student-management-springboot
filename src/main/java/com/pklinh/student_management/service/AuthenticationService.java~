@@ -101,7 +101,6 @@ public class AuthenticationService {
         try{
             // Ký bằng MACSigner và Khóa bí mật
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
-
             // Trả về chuỗi Header.Payload.Signature
             return jwsObject.serialize();
         } catch(JOSEException e){

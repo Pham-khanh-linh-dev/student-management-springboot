@@ -12,12 +12,9 @@ public enum ErrorCode {
     USERNAME_INVALID(1004, "Username IS NULL", HttpStatus.BAD_REQUEST),
     PASSWORD_INVALID(1005, "Password NEED AT LEAST 2 CHARACTERS", HttpStatus.BAD_REQUEST),
 
-//    Lỗi chưa xác thực
-    UNAUTHENTICATED(2001, "Unauthenticated", HttpStatus.UNAUTHORIZED),
 //    Lỗi chưa xác định được
     INVALID_KEY(1001, "Invalid key", HttpStatus.BAD_REQUEST)
     ;
-
 
     private int code;
     private String message;
