@@ -1,0 +1,19 @@
+package com.pklinh.student_management.exception;
+
+import lombok.Builder;
+
+@Builder
+public class AppException extends RuntimeException{
+    private ErrorCode errorCode;
+    public AppException(ErrorCode errorCode){
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
+    }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
+    public int getCode(){
+        return errorCode.getCode();
+    }
+}

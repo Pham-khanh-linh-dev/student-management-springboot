@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  servlet:
+#    context giúp hệ thống định vị service này trong hệ thống microservice
+    context-path: /student-management
+
+spring:
+  datasource:
+    url: "jdbc:mysql://localhost:3307/studentManagementDb"
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  application:
+    name: student-management
