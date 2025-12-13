@@ -11,6 +11,8 @@ import com.pklinh.student_management.repository.UserRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +31,10 @@ public class UserService {
 
         // Dùng maptruct để map dto sang entity
         User user = userMapper.toUser(request);
+
+        // Dùng Bcrypt mã hóa mật khẩu Buổi #6
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         return userRepository.save(user);
     }

@@ -24,7 +24,7 @@ public class User {
     String password;
     String email;
     String mssv;
-    double gpa;
+    Double gpa;
     LocalDate dob;
 
 }

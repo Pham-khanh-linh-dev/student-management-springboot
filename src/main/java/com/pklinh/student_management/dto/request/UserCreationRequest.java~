@@ -20,6 +20,6 @@ public class UserCreationRequest {
     String password;
     String email;
     String mssv;
-    Double gpa;
+    double gpa;
     LocalDate dob;
 }
