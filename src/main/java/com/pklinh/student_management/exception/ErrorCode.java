@@ -14,10 +14,12 @@ public enum ErrorCode {
 
 //    Lỗi chưa xác thực
     UNAUTHENTICATED(2001, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+
+//    Lỗi Access denied
+    UNAUTHORIZED(2002, "You dont have permission to access this resource", HttpStatus.FORBIDDEN),
 //    Lỗi chưa xác định được
     INVALID_KEY(1001, "Invalid key", HttpStatus.BAD_REQUEST)
     ;
-
 
     private int code;
     private String message;

@@ -9,6 +9,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     User toUser(UserCreationRequest userCreationRequest);
@@ -18,4 +20,5 @@ public interface UserMapper {
 //    @Mapping(source = "mssv", target = "password") // cả mssv và ps đều được map bởi mssv
 //    @Mapping(target = "gpa", ignore = true)
     UserResponse toUserResponse(User user);
+    List<UserResponse> toUserResponse(List<User> users);
 }
