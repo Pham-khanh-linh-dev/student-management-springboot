@@ -8,6 +8,7 @@ import com.pklinh.student_management.dto.request.AuthenticationRequest;
 import com.pklinh.student_management.dto.request.IntrospectRequest;
 import com.pklinh.student_management.dto.response.AuthenticationResponse;
 import com.pklinh.student_management.dto.response.IntrospectResponse;
+import com.pklinh.student_management.entity.User;
 import com.pklinh.student_management.exception.AppException;
 import com.pklinh.student_management.exception.ErrorCode;
 import com.pklinh.student_management.repository.UserRepository;
@@ -20,11 +21,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.nimbusds.jwt.SignedJWT;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +52,7 @@ public class AuthenticationService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
 
 //        true -> tạo jwt cho user
-        var token = generateToken(user.getUsername());
+        var token = generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(authenticated)
@@ -78,20 +81,20 @@ public class AuthenticationService {
 
 
 // Tạo JWT
-    private String generateToken(String username){
+    private String generateToken(User user){
 //        A. ĐỊnh nghĩa header
 //        Khai báo đây là một JSON Web Signature (JWS).
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
 
 //        B.Định nghĩa ClaimSet
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username) // Ai là chủ sở hữu Token
+                .subject(user.getUsername()) // Ai là chủ sở hữu Token
                 .issuer("pklinh.com") // Đơn vị phát hành
                 .issueTime(new Date()) // Thời gian phát hành (iat)
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli() // Thời gian hết hạn (exp): 1 giờ sau
                 ))
-                .claim("customClaim", "Custom") // Thuộc tính bổ sung (optional)
+                .claim("scope", buildScope(user)) // Thuộc tính bổ sung (optional)
                 .build();
 
 //        C. Ký Token
@@ -108,5 +111,12 @@ public class AuthenticationService {
             log.error("Error generating token");
             throw new RuntimeException(e);
         }
+    }
+
+    private String buildScope(User user){
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if(!CollectionUtils.isEmpty(user.getRoles()))
+            user.getRoles().forEach(stringJoiner::add);
+        return stringJoiner.toString();
     }
 }

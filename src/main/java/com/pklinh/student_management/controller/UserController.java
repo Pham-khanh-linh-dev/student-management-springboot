@@ -7,11 +7,15 @@ import com.pklinh.student_management.dto.response.UserResponse;
 import com.pklinh.student_management.entity.User;
 import com.pklinh.student_management.service.UserService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -26,9 +30,19 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getUsers(){
-        return userService.getUsers();
+    public ApiResponse<List<UserResponse>> getUsers(){
+//    Lấy thông tin user đang trong request, context
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info("Role: {}", grantedAuthority.getAuthority()));
+
+
+        return ApiResponse.<List<UserResponse>>builder()
+                .result(userService.getUsers())
+                .build()
+                ;
     }
+
     @GetMapping("/{id}")
     public UserResponse getUser(@PathVariable String id){
         return userService.getUser(id);
@@ -37,5 +51,14 @@ public class UserController {
     @PutMapping("/{id}")
     public UserResponse updateUser(@PathVariable String id, @RequestBody UserUpdateRequest request){
         return userService.updateUser(id,request);
+    }
+
+    @GetMapping("/my-info")
+    public ApiResponse<UserResponse> getMyInfo(){
+
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getMyInfo())
+                .build()
+                ;
     }
 }
