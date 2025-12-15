@@ -26,7 +26,9 @@ import org.springframework.util.CollectionUtils;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.StringJoiner;
 
 @Service
@@ -96,6 +98,7 @@ public class AuthenticationService {
                 ))
                 .claim("scope", buildScope(user)) // Thuộc tính bổ sung (optional)
                 .build();
+        log.info("Scope: in method generateToken: {}", buildScope(user));
 
 //        C. Ký Token
         Payload payload = new Payload((jwtClaimsSet.toJSONObject()));
@@ -114,9 +117,19 @@ public class AuthenticationService {
     }
 
     private String buildScope(User user){
-        StringJoiner stringJoiner = new StringJoiner(" ");
-        if(!CollectionUtils.isEmpty(user.getRoles()))
-            user.getRoles().forEach(stringJoiner::add);
-        return stringJoiner.toString();
+        StringJoiner roles = new StringJoiner(" ");
+        if(!CollectionUtils.isEmpty(user.getRoles())){
+//            user.getRoles().forEach(role -> role.add(role.getName()));
+            for(var role : user.getRoles()){
+                roles.add("ROLE_" +role.getName());
+                if(!CollectionUtils.isEmpty(role.getPermissions()))
+                    for(var permission : role.getPermissions()){
+                        roles.add(permission.getName());
+                    }
+            }
+
+        }
+        log.info("Roles: in method builScope{}", roles.toString());
+        return roles.toString();
     }
 }

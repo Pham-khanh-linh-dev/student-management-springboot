@@ -1,14 +1,14 @@
 package com.pklinh.student_management.service;
 
 import com.pklinh.student_management.Mapper.UserMapper;
-import com.pklinh.student_management.Role;
+import com.pklinh.student_management.enums.Role;
 import com.pklinh.student_management.dto.request.UserCreationRequest;
 import com.pklinh.student_management.dto.request.UserUpdateRequest;
-import com.pklinh.student_management.dto.response.ApiResponse;
 import com.pklinh.student_management.dto.response.UserResponse;
 import com.pklinh.student_management.entity.User;
 import com.pklinh.student_management.exception.AppException;
 import com.pklinh.student_management.exception.ErrorCode;
+import com.pklinh.student_management.repository.RoleRepository;
 import com.pklinh.student_management.repository.UserRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +33,7 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
 
     public User createUser(UserCreationRequest request){
         if(userRepository.existsByUsername(request.getUsername()))
@@ -47,7 +48,7 @@ public class UserService {
         // set role cho user để phân quyền
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.USER.name());
-        user.setRoles(roles);
+        //user.setRoles(roles);
 
 
         return userRepository.save(user);
@@ -71,14 +72,21 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(()-> new AppException(ErrorCode.USER_NOT_FOUND)));
     }
 
+    @Transactional
     public UserResponse updateUser(String id, UserUpdateRequest request){
         User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
         userMapper.updateUser(user,request);
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        var roles = roleRepository.findAllById(request.getRoles());
+        log.info("Roles: in method updateUser", request.getRoles());
+        user.setRoles(new HashSet<>(roles));
+        return userMapper.toUserResponse(user);
     }
 
     // Lấy thông tin người đang đăng nhập
+    @PreAuthorize("hasAnyAuthority('SHOW_REPORT')") // phần quyền theo permission(authority)
     public UserResponse getMyInfo(){
         var context = SecurityContextHolder.getContext();
         log.info("Username: {}", context.getAuthentication().getName());
