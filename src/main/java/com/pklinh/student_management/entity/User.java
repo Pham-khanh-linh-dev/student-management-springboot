@@ -25,6 +25,7 @@ public class User {
     @Column(nullable = true)
     Double gpa;
     LocalDate dob;
-    @ElementCollection(fetch = FetchType.EAGER)
-    Set<String> roles;
+//    @ElementCollection(fetch = FetchType.EAGER)
+    @ManyToMany
+    Set<Role> roles;
 }

@@ -18,7 +18,12 @@ public enum ErrorCode {
 //    Lỗi Access denied
     UNAUTHORIZED(2002, "You dont have permission to access this resource", HttpStatus.FORBIDDEN),
 //    Lỗi chưa xác định được
-    INVALID_KEY(1001, "Invalid key", HttpStatus.BAD_REQUEST)
+    INVALID_KEY(1001, "Invalid key", HttpStatus.BAD_REQUEST),
+
+//    LỖi phân quyền
+    ROLE_NOT_FOUND(3003, "Role not found", HttpStatus.BAD_REQUEST),
+    PERMISSION_NOT_FOUND(3004, "Permission not found", HttpStatus.BAD_REQUEST)
+
     ;
 
     private int code;

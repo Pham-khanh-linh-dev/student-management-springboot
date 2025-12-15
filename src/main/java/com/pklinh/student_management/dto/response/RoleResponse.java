@@ -1,11 +1,9 @@
 package com.pklinh.student_management.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.pklinh.student_management.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -14,12 +12,10 @@ import java.util.Set;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserResponse {
-    String id;
-    String username;
-    String email;
-    String mssv;
-    Double gpa;
-    LocalDate dob;
-    Set<RoleResponse> roles;
+
+public class RoleResponse {
+    String name;
+    String description;
+    Set<PermissionResponse> permissions;
+
 }
