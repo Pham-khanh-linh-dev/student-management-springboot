@@ -3,6 +3,7 @@ package com.pklinh.student_management.controller;
 import com.nimbusds.jose.JOSEException;
 import com.pklinh.student_management.dto.request.AuthenticationRequest;
 import com.pklinh.student_management.dto.request.IntrospectRequest;
+import com.pklinh.student_management.dto.request.LogoutRequest;
 import com.pklinh.student_management.dto.response.ApiResponse;
 import com.pklinh.student_management.dto.response.AuthenticationResponse;
 import com.pklinh.student_management.dto.response.IntrospectResponse;
@@ -42,5 +43,13 @@ public class AuthenticationController {
                 .result(introspectResult)
                 .build();
         return apiResponse;
+    }
+
+    @PostMapping("/logout")
+    ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws JOSEException, ParseException {
+        authenticationService.logout(request);
+
+        return ApiResponse.<Void>builder()
+                .build();
     }
 }
