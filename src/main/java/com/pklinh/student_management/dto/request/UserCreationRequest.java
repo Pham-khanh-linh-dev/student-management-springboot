@@ -1,5 +1,6 @@
 package com.pklinh.student_management.dto.request;
 
+import com.pklinh.student_management.validator.DobConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,7 @@ public class UserCreationRequest {
     String email;
     String mssv;
     Double gpa;
+
+    @DobConstraint(min = 5, message = "DOB_INVALID")
     LocalDate dob;
 }

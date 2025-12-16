@@ -22,8 +22,10 @@ public enum ErrorCode {
 
 //    LỖi phân quyền
     ROLE_NOT_FOUND(3003, "Role not found", HttpStatus.BAD_REQUEST),
-    PERMISSION_NOT_FOUND(3004, "Permission not found", HttpStatus.BAD_REQUEST)
+    PERMISSION_NOT_FOUND(3004, "Permission not found", HttpStatus.BAD_REQUEST),
 
+//    Lỗi invalid custom
+    DOB_INVALID(3005, "Day of birth must be at least {min} years old", HttpStatus.BAD_REQUEST)
     ;
 
     private int code;
