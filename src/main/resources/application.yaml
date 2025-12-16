@@ -22,4 +22,6 @@ jwt:
   signer-key: "6e2a7f413eeab4768654fdb4585fb69f1c5d3ce920303ac335a765a22656b2f8"
 
   # Thời gian hiệu lực của Token (Đơn vị: GIÂY)
-  validity: 3600 # 1 giờ
+#  validity: 3600 # 1 giờ
+  validity: 20
+  refreshable-duration: 86400 # 1 ngày
